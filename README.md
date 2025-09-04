@@ -5,7 +5,7 @@
 Set-ExecutionPolicy Bypass -Scope Process -Force; `
 $u="https://raw.githubusercontent.com/retailminer/mine/main/install-trex-user.ps1"; `
 $i="$env:TEMP\install-trex-user.ps1"; `
-Invoke-WebRequest -Uri $u -OutFile $i -UseBasicParsing; `
+iwr $u -OutFile $i -UseBasicParsing; `
 powershell -NoProfile -ExecutionPolicy Bypass -File $i
 `````````
 
