@@ -3,9 +3,13 @@
 ## Install
 ```powershell
 Set-ExecutionPolicy Bypass -Scope Process -Force; `
-$u="https://raw.githubusercontent.com/retailminer/mine/main/install-trex-user.ps1"; `
+$u='https://raw.githubusercontent.com/retailminer/mine/main/install-trex-user.ps1'; `
 $i="$env:TEMP\install-trex-user.ps1"; `
-iwr $u -OutFile $i -UseBasicParsing; `
+$ProgressPreference='SilentlyContinue'; `
+[Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12; `
+Remove-Item $i -Force -ErrorAction SilentlyContinue; `
+$wc = New-Object System.Net.WebClient; $wc.Headers['User-Agent']='Mozilla/5.0'; `
+$wc.DownloadFile($u,$i); `
 powershell -NoProfile -ExecutionPolicy Bypass -File $i
 `````````
 
