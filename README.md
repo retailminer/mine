@@ -3,15 +3,15 @@
 ## Install
 ```powershell
 Set-ExecutionPolicy Bypass -Scope Process -Force; `
-$url="https://raw.githubusercontent.com/retailminer/mine/main/install-trex-user.ps1"; `
-$installer="$env:TEMP\install-trex-user.ps1"; `
-Invoke-WebRequest -Uri $url -OutFile $installer -UseBasicParsing; `
-powershell -NoProfile -ExecutionPolicy Bypass -File $installer
+$u="https://raw.githubusercontent.com/retailminer/mine/main/install-trex-user.ps1"; `
+$i="$env:TEMP\install-trex-user.ps1"; `
+Invoke-WebRequest -Uri $u -OutFile $i -UseBasicParsing; `
+powershell -NoProfile -ExecutionPolicy Bypass -File $i
 `````````
 
 ## Remove
 ```powershell
 Stop-Process -Name t-rex -Force -ErrorAction SilentlyContinue; `
-Remove-Item "$env:APPDATA\Microsoft\Windows\Start Menu\Programs\Startup\T-Rex Miner (auto-update).lnk" -Force -ErrorAction SilentlyContinue; `
+Remove-Item "$env:APPDATA\Microsoft\Windows\Start Menu\Programs\Startup\T-Rex Miner.lnk" -Force -ErrorAction SilentlyContinue; `
 Remove-Item "$env:USERPROFILE\trex" -Recurse -Force -ErrorAction SilentlyContinue
 `````````
