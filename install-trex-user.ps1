@@ -58,4 +58,4 @@ $Shortcut.Save()
 Write-Host "`n✔ T-Rex installed in: $BaseDir"
 Write-Host "✔ Config written to:  $Config"
 Write-Host "✔ Autostart shortcut: $ShortcutPath"
-Write-Host "`nIf you haven't yet, commit start-with-update.ps1 to your repo so it can pull latest at logon."
+Write-Host "`nIf you have not yet, commit start-with-update.ps1 to your repo so it can pull latest at logon."
